@@ -1,0 +1,120 @@
+# Extracting the full length circRNA sequence for the example data provided in FicrcSEC package
+## Author Md. Tofazzal Hossain, Date: 14.01.2020
+
+## Extracting transcript information from the annotation file
+
+```{r}
+library("FcircSEC")
+```
+
+
+```{r}
+    #Loading an example annotation file and write to a file
+    #Here temporary directory is created as input-output
+    #directory. Please provide your own directory instead.
+    out_dir<-tempdir()
+    annotation_file<-data(refGenchr1)  
+    annotation_file<-refGenchr1
+    write.table(annotation_file, file.path(out_dir,"annotation_file.gtf"), 
+         row.names=FALSE, sep="\t",quote=FALSE, col.names=FALSE)
+
+    #Extraction of transcript information. Here, the output will be generated in file 
+    #transcriptdata.txt in out_dir directory
+    transcriptExtract(file.path(out_dir,"annotation_file.gtf"), "ucsc", 
+    file.path(out_dir, "transcriptdata.txt"))
+    
+    transdata<-read.table(file.path(out_dir, "transcriptdata.txt"), header = T) # open the output file
+    head(transdata) # see the 1st 6 rows
+```
+
+## Classifying circRNAs
+
+```{r}
+    #Loading and example transcript data and write to a file
+    #Here temporary directory is created as input-output
+    #directory. Please provide you own directory instead.
+    out_dir<-tempdir()
+    t_data<-data("transcript_data") 
+    t_data<-transcript_data
+    write.table(t_data, file.path(out_dir,"transcript_data.txt"), row.names=FALSE)
+
+    #Loading an example bedfile obtained form the circRNA prediction tool and write to a file
+    b_file<-data("output_CIRI")
+    b_file<-output_CIRI
+    head(b_file) # see the 1st 6 rows
+    write.table(b_file, file.path(out_dir,"output_CIRI.bed"), col.names=FALSE, row.names=FALSE)
+
+    #Classification of circRNAs. Here, the output will be written in two files 
+    #circRNA_class.txt and circRNA_class.bed in out_dir directory
+    circClassification (file.path(out_dir,"transcript_data.txt"), 
+            file.path(out_dir,"output_CIRI.bed"), file.path(out_dir, "circRNA_class.txt"), 
+              file.path(out_dir, "circRNA_class.bed"))
+    #open the output files and see the 1st 6 rows
+    circRNA_classt<-read.table(file.path(out_dir, "circRNA_class.txt"), header=T)
+    head(circRNA_classt)
+    circRNA_classb<-read.table(file.path(out_dir, "circRNA_class.bed"))
+    head(circRNA_classb)
+```
+
+## Generating sequences from the reference genome with specific intervals
+
+```{r}
+
+    #Loading an example reference genome and write to a file
+    #Here temporary directory is created as input-output
+    #directory. Please provide you own directory instead.
+    out_dir<-tempdir()
+    ref_genom<-data("chr1")
+    ref_genom<-chr1
+    df.fasta=dataframe2fas(ref_genom, file.path(out_dir, "ref_genome.fasta"))
+
+    #Loading an example circRNA classification bed file and write to a file
+    circ_class_bed<-data("circRNA_classb")
+    circ_class_bed<-circRNA_classb
+    write.table(circ_class_bed, file.path(out_dir, "circ_class.bed"), 
+          col.names=FALSE, row.names=FALSE)
+
+    #Getting genomic sequences of circRNAs. The output will be 
+    #generated in file circRNA_genomic_seq.fasta in out_dir directory
+    get.fasta(file.path(out_dir, "ref_genome.fasta"), 
+          file.path(out_dir, "circ_class.bed"), 
+            file.path(out_dir, "circRNA_genomic_seq.fasta"))
+    #open the output file and see the 1st 6 rows
+    fastaFile <- readDNAStringSet(file.path(out_dir, "circRNA_genomic_seq.fasta")) 
+    seq_name = sub('\\ .*', '', names(fastaFile))
+    sequence = paste(fastaFile)
+    df <- data.frame(seq_name, sequence)
+    head(df)
+```
+
+## Generating full length circRNA sequences
+
+```{r}
+    #Loading an example circRNA genomic sequence and write to a file
+    #Here temporary directory is created as input-output
+    #directory. Please provide you own directory instead.
+    out_dir<-tempdir()
+    circ_genomic_seq<-data("circRNA_genomic_sequence")
+    circ_genomic_seq<-circRNA_genomic_sequence
+    df.fasta=dataframe2fas(circ_genomic_seq, file.path(out_dir, "circ_genomic_seq.fasta"))
+
+    #Loading an example circ_class_txt data and write to a file
+    circ_class_txt<-data("circRNA_classt")
+    circ_class_txt<-circRNA_classt
+    write.table(circ_class_txt, file.path(out_dir, "circ_class.txt"), 
+          row.names=FALSE)
+
+    #Extracting full length circRNA sequences. Here, the output will be 
+    #written in file circRNA_sequence.fasta in out_dir directory
+    circSeqExt(file.path(out_dir, "circ_genomic_seq.fasta"),
+         file.path(out_dir, "circ_class.txt"), file.path(out_dir, "circRNA_sequence.fasta"))
+    #open the output file and see the 1st 6 rows
+    fastaFile1 <- readDNAStringSet(file.path(out_dir, "circRNA_sequence.fasta")) 
+    seq_name1 = sub('\\ .*', '', names(fastaFile1))
+    sequence1 = paste(fastaFile1)
+    df1 <- data.frame(seq_name1, sequence1)
+    head(df1)
+```
+
+# The End
+
