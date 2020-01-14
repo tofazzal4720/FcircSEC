@@ -1,3 +1,6 @@
+<!-- badges: start -->
+  [![Travis build status](https://travis-ci.com/tofazzal4720/FcircSEC.svg?branch=master)](https://travis-ci.org/tofazzal4720/FcircSEC)
+  <!-- badges: end -->
 # FcircSEC is an R package for full length circRNA sequence extraction and classification
 
 ## Requirements
