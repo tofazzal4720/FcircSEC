@@ -1,5 +1,5 @@
 ## Resubmission
-This is a resubmission. I have made the following changes:
+This is a resubmission. According to the CRAN team member's comments, I have made the following changes:
 
 * Added references in the description field of the DESCRIPTION file.
 
