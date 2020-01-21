@@ -49,7 +49,7 @@ transcriptExtract<-function(annotationFile, databaseName, outputfile){
   } else if(ext=="gtf") {
     annot_file<-read.table(annotationFile, header = FALSE, sep = '\t')
   }else {
-    print("Error: please input the annotation file in gff or gtf format as the first argument")
+    message("Error: please input the annotation file in gff or gtf format as the first argument")
   }
   
   
@@ -59,7 +59,7 @@ transcriptExtract<-function(annotationFile, databaseName, outputfile){
     
     trans_id<-sub(".*transcript_id=", "", gff_exon$V9)
     if (length(which(grepl("ID=",trans_id)==T))==length(trans_id) | length(which(grepl("gene_id ",trans_id)==T))==length(trans_id)){
-      print("Error: your provided annoation file is not an ncbi annotation file")
+      message("Error: your provided annoation file is not an ncbi annotation file")
     }else{
       gene_id<-sub('.*gene=', '', gff_exon$V9)
       gene_id_final<-sub('\\;.*', '', gene_id)
@@ -119,7 +119,7 @@ transcriptExtract<-function(annotationFile, databaseName, outputfile){
     
     trans_id<-sub(".*transcript_id ", "", gtf_exon$V9)
     if(length(which(grepl("ID=",trans_id)==T))==length(trans_id) | length(which(grepl("gene_id ",trans_id)==T))==length(trans_id)){
-      print("Error: your provided annoation file is not an ucsc annotation file")
+      message("Error: your provided annoation file is not an ucsc annotation file")
     }else{
       trans_id_final<-sub('\\;.*', '', trans_id)
       
@@ -183,7 +183,7 @@ transcriptExtract<-function(annotationFile, databaseName, outputfile){
     
     trans_id<-sub(".*transcript_id ", "", gtf_exon$V9)
     if(length(which(grepl("ID=",trans_id)==T))==length(trans_id) | length(which(grepl("gene_id ",trans_id)==T))==length(trans_id)){
-      print("Error: your provided annoation file is not supported by our method, please use another annotation file")
+      message("Error: your provided annoation file is not supported by our method, please use another annotation file")
     }else{
       trans_id_final<-sub('\\;.*', '', trans_id)
       
@@ -243,7 +243,7 @@ transcriptExtract<-function(annotationFile, databaseName, outputfile){
       write.table(trans_data,outputfile,sep="\t",quote=F,row.names=F)
     }
   }else{
-    print("Error: please input 'ncbi' or 'ucsc' or 'other' as the second argument")
+    message("Error: please input 'ncbi' or 'ucsc' or 'other' as the second argument")
   } 
 }
 
